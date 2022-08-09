@@ -6,26 +6,29 @@
       v-for="task in tasks"
       class="list-group mt-2"
     >
-      <Task
-        @toggle-reminder="$emit('toggle-reminder', task.id)"
-        @delete-task="$emit('delete-task', task.id)"
-        :task="task"
-      />
+      <Task :task="task" />
     </ol>
   </div>
 </template>
 
 <script>
 import Task from "./Task.vue";
+import {mapActions,mapState} from 'vuex'
 export default {
   name: "TasksComponent",
-  props: {
-    tasks: Array,
-  },
   components: {
     Task,
   },
-  emits: ["delete-task", "toggle-reminder"],
+  methods:{
+    ...mapActions(['fetchTasks','toggleReminder'])
+    
+  },
+  computed: {
+    ...mapState(["tasks"]),
+  },
+  async created(){
+    this.fetchTasks();
+  }
 };
 </script>
 
