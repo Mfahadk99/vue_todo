@@ -77,6 +77,7 @@
 
 
 <script>
+import { mapActions } from 'vuex';
 export default {
   name: "AddTaskComponent",
   data() {
@@ -102,13 +103,15 @@ export default {
         reminder: this.reminder,
       };
 
-      this.$emit("add-task", newTask);
+      this.addTask(newTask)
       console.log(newTask);
 
       this.text = "";
       this.day = "";
       this.reminder = false;
     },
+
+    ...mapActions(['addTask'])
   },
 };
 </script>

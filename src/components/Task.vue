@@ -1,6 +1,6 @@
 <template>
   <li
-    @dblclick="$emit('toggle-reminder', task.id)"
+    @dblclick="toggleReminder(task.id)"
     :class="[
       task.reminder ? 'rem-border' : '',
       'list-group-item',
@@ -15,21 +15,21 @@
     </div>
 
     <span class="badge"
-      ><i @click="$emit('delete-task', task.id)" class="fas fa-times"></i
+      ><i @click="deleteTask(task.id)" class="fas fa-times"></i
     ></span>
   </li>
 </template>
 
 <script>
+
+import {mapActions} from 'vuex'
 export default {
   name: "TaskComponent",
   props: {
     task: Object,
   },
   methods: {
-    onDelete(id) {
-      this.$emit("delete-task", id);
-    },
+    ...mapActions(['deleteTask','toggleReminder'])
   },
 };
 </script>
