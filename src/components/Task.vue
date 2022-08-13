@@ -1,6 +1,6 @@
 <template>
   <li
-    @dblclick="toggleReminder(task.id)"
+    @dblclick="toggleReminder(task._id)"
     :class="[
       task.reminder ? 'rem-border' : '',
       'list-group-item',
@@ -15,8 +15,10 @@
     </div>
 
     <span class="badge"
-      ><i @click="deleteTask(task.id)" class="fas fa-times"></i
+      ><i @click="deleteTask(task._id)" class="fas fa-times"></i
     ></span>
+
+    <!-- <button @click="fetchTask(task._id)">clcik to get task</button> -->
   </li>
 </template>
 
@@ -29,7 +31,7 @@ export default {
     task: Object,
   },
   methods: {
-    ...mapActions(['deleteTask','toggleReminder'])
+    ...mapActions(['deleteTask','toggleReminder','fetchTask'])
   },
 };
 </script>
