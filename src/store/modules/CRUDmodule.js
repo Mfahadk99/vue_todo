@@ -1,6 +1,4 @@
-import { createStore } from 'vuex';
-import axios from 'axios'
-const store = createStore({
+export default {
     state() {
         return {
             tasks: [],
@@ -22,31 +20,38 @@ const store = createStore({
 
         toggle(state, payload) {
             state.tasks = state.tasks.map((data) => {
-                return data._id === payload.id ? { ...data, reminder: payload.UpdData.reminder } : data;
+                return data.id === payload.id ? { ...data, reminder: payload.UpdData.reminder } : data;
             });
         }
     },
     actions: {
         async fetchTasks(context) {
-            // const res = await fetch("api/tasks");
-            const res = await axios.get("http://localhost:9000");
-            const data = await res.data;
+            const res = await fetch("api/tasks");
+
+            const data = await res.json();
             context.commit('setTasks', data)
             return data;
         },
         async fetchTask(context, id) {
-            const res = await axios.get(`http://localhost:9000/api/tasks/${id}`);
-            // const res = await fetch(`api/tasks/${id}`);
-            const data = await res.data;
+            const res = await fetch(`api/tasks/${id}`);
+            console.log("id===>", id)
+            const data = await res.json();
 
             return data;
         },
         async toggleReminder(context, id) {
+            const taskToToggle = await context.dispatch('fetchTask', id);
+            const updTask = { ...taskToToggle, reminder: !taskToToggle.reminder };
 
-            const res = await axios.put(`http://localhost:9000/api/tasks/${id}`, { id })
+            const res = await fetch(`api/tasks/${id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-type": "application/json",
+                },
+                body: JSON.stringify(updTask),
+            });
 
-            const UpdData = await res.data;
-            console.log(UpdData)
+            const UpdData = await res.json();
             context.commit('toggle', { UpdData, id })
         },
         async deleteTask(context, id) {
@@ -54,9 +59,6 @@ const store = createStore({
                 const res = await fetch(`api/tasks/${id}`, {
                     method: "DELETE",
                 });
-                // const res = await axios.delete(`http://localhost:9000/api/tasks/${id}`, { id });
-
-                // console.log(res.data);
 
                 res.status === 200
                     ? context.commit('removeTask', id)
@@ -78,11 +80,5 @@ const store = createStore({
             const data = await res.json();
             context.commit('newTask', data)
         },
-    },
-    modules: {
-
     }
-})
-
-
-export default store
+}
